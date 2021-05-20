@@ -1,0 +1,10 @@
+net\snack\util\DateValidatorUsingDateFormat.class
+net\snack\dao\repository\CategoryRepository.class
+net\snack\dao\model\Record.class
+net\snack\AppMain.class
+net\snack\dao\model\Category.class
+net\snack\AppController.class
+net\snack\service\RecordService.class
+net\snack\dao\repository\RecordRepository.class
+net\snack\MvcConfig.class
+net\snack\service\CategoryService.class

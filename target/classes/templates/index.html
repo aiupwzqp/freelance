@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Sback Vending Machine</title>
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.1.3/css/bootstrap.min.css} "/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/snake_machine.css}"/>
+
+    <script src="/js/jquery.js"></script>
+    <script src="/js/jquery.validate.js"></script>
+</head>
+
+<body class="snack">
+
+<div class="container">
+    <div class="header clearfix">
+
+        <h3 class="text-muted">Welcome</h3>
+    </div>
+
+    <div class="jumbotron">
+        <h1 class="display-3">Snake Vending Machine</h1>
+        <form name="commandAction" id="commandAction" action="/command">
+            <label>
+                <input type="text" size="50" name="command"/>
+            </label>
+
+            <button type="submit" class="btn btn-lg btn-success" role="button">Add Command</button>
+
+        </form>
+        <div th:text="${error}" class="error validation"></div>
+        <div th:text="${success}" class="success"></div>
+    </div>
+
+    <!-- testimonial -->
+    <div class="container-fluid cxt-padded bg-faded">
+        <div class="container">
+            <div class="row">
+                <div th:each="category : ${categories}" class="col-lg-4 col-md-6 mb-4 ">
+
+                    <div class="category">
+
+                        <div class="col-md-10 text-md-center text-center name-holder">
+                            <div class="name-wrapper">
+                                <span th:text="${category.name}"></span>
+                            </div>
+                            <h2 class="mt-0">Price:<p th:text="${category.price}"></p></h2>
+
+                            <label>Amount</label>
+                            <span class="lead" th:text="${category.amount}"></span>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div th:if="${records}">
+                <h1>Items</h1>
+                <br/><br/>
+                <table border="1" cellpadding="10">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Purchase Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="record : ${records}">
+                        <td th:text="${record.id}">ID</td>
+                        <td th:text="${record.category.name}">Name</td>
+                        <td th:text="${#dates.format(record.purchaseDate, 'yyyy-MM-dd')}">Purchase Date</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#commandAction").validate({
+
+            onkeyup: false,
+            onclick: false,
+            onfocusout: false,
+
+            errorPlacement: function (error, element) {
+                error.insertAfter(".validation");
+            },
+
+            rules: {
+                command: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 80,
+                    onRequest: true
+                }
+            },
+            messages: {
+                command: {
+                    required: "This field is required",
+                    minlength: "Too short request, min symbols length - 4",
+                    maxlength: "Too large request, max symbols length - 80",
+                }
+            }
+        });
+
+        $.validator.addMethod('onRequest', function (value, element, param) {
+
+            var actions = ["addCategory", "addItem", "purchase", "list", "clear", "report"];
+            var action = value.substring(0, value.indexOf(" "));
+
+            console.log(value);
+
+            return $.inArray(action, actions) > -1 || value === "list" || value === "clear";
+
+        }, 'Wrong request, use one patterns: <br/>' +
+            'addCategory "Chocolate bar" 32.75 12 <br/>' +
+            'addItem "Chocolate bar" 25 <br/> ' +
+            'purchase "Chocolate bar" 2021-04-13 <br/>' +
+            'list <br/>' +
+            'clear \n' +
+            'report 2021-04 <br/>' +
+            'report 2021-04-21');
+
+    });
+
+</script>
